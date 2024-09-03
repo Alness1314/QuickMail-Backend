@@ -36,3 +36,6 @@ build/
 #env files
 /.env
 .env
+
+
+logs/

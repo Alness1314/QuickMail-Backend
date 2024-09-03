@@ -1,0 +1,48 @@
+server:
+    port: ${PORT}
+
+    ssl:
+      enabled: true
+      key-store-type: PKCS12
+      key-store: ${PFX_PATH}
+      key-store-password: ${PFX_PASSWORD}
+
+spring:
+    application:
+        name: QuickMail
+
+    mail:
+        host: ${MAIL_HOST}
+        port: ${MAIL_PORT}
+        username: ${MAIL_USERNAME}
+        password: ${MAIL_PASSWORD}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+                    connectiontimeout: 5000
+                    timeout: 3000
+                    writetimeout: 5000
+
+email:
+    from: ${MAIL_USERNAME}
+
+#Open api swagger ui 
+springdoc: 
+    api-docs: 
+        path: /api-docs
+
+#prefix endpoints configuration
+api:
+    prefix: /api
+
+logging:
+  level:
+    com.alness.quickmail: info
+    org.springframework: info
+  file:
+    #   max-size: 50G
+    name: logs/quickmail_app.log
+    path: logs
