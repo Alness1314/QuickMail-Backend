@@ -11,6 +11,7 @@ import com.alness.quickmail.exceptions.RestExceptionHandler;
 import com.alness.quickmail.files.dto.FileUploadRequest;
 import com.alness.quickmail.files.service.FileUploadService;
 import com.alness.quickmail.sender.dto.ResponseDto;
+import com.alness.quickmail.utils.CodeUtils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,6 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final String baseDir = System.getProperty("user.dir") + File.separator + "assets" + File.separator;
     private final String templatePath = baseDir + "templates" + File.separator;
     private final String imgPath = baseDir + "img" + File.separator;
-
-    private String codeApi = "P-400";
 
     @PostConstruct
     public void init() {
@@ -40,21 +39,21 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     public ResponseDto saveFile(FileUploadRequest request) {
         if (request.getFile() == null) {
-            throw new RestExceptionHandler(codeApi, HttpStatus.BAD_REQUEST, "El archivo no puede estar vacio.");
+            throw new RestExceptionHandler(CodeUtils.API_CODE_400, HttpStatus.BAD_REQUEST, "El archivo no puede estar vacio.");
         }
 
         String originalFilename = request.getFile().getOriginalFilename();
         if (originalFilename == null) {
-            throw new RestExceptionHandler(codeApi, HttpStatus.BAD_REQUEST, "El archivo debe tener un nombre y extension.");
+            throw new RestExceptionHandler(CodeUtils.API_CODE_400, HttpStatus.BAD_REQUEST, "El archivo debe tener un nombre y extension.");
         }
 
         // Validar la extensión del archivo
         if (Boolean.TRUE.equals(request.getTemplate()) && !originalFilename.endsWith(".hbs")) {
-            throw new RestExceptionHandler(codeApi, HttpStatus.BAD_REQUEST, "Solo se permiten archivos .hbs cuando es un template.");
+            throw new RestExceptionHandler(CodeUtils.API_CODE_400, HttpStatus.BAD_REQUEST, "Solo se permiten archivos .hbs cuando es un template.");
         }
 
         if (Boolean.FALSE.equals(request.getTemplate()) && !originalFilename.endsWith(".png")) {
-            throw new RestExceptionHandler(codeApi, HttpStatus.BAD_REQUEST, "Solo se permiten archivos .png cuando template es falso.");
+            throw new RestExceptionHandler(CodeUtils.API_CODE_400, HttpStatus.BAD_REQUEST, "Solo se permiten archivos .png cuando template es falso.");
         }
 
         try {
@@ -65,7 +64,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             return new ResponseDto("Archivo cargado con exito.", HttpStatus.ACCEPTED, true);
         } catch (Exception e) {
             log.error("Error al intentar cargar el archivo ", e);
-            throw new RestExceptionHandler("P-500", HttpStatus.INTERNAL_SERVER_ERROR, "Error al intentar cargar el archivo");
+            throw new RestExceptionHandler(CodeUtils.API_CODE_500, HttpStatus.INTERNAL_SERVER_ERROR, "Error al intentar cargar el archivo");
         }
 
     }

@@ -1,6 +1,7 @@
 package com.alness.quickmail.sender.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -19,6 +20,7 @@ import com.alness.quickmail.sender.dto.AttachmentsDto;
 import com.alness.quickmail.sender.dto.EmailRequest;
 import com.alness.quickmail.sender.dto.ResponseDto;
 import com.alness.quickmail.sender.service.EmailService;
+import com.alness.quickmail.utils.CodeUtils;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
@@ -37,8 +39,6 @@ public class EmailServiceImpl implements EmailService {
     private String emailFrom;
 
     private final Handlebars handlebars = new Handlebars();
-
-    private String codeApi = "P-400";
 
     private final String baseDir = System.getProperty("user.dir") + File.separator + "assets" + File.separator;
     private final String templatePath = baseDir + "templates" + File.separator;
@@ -64,7 +64,6 @@ public class EmailServiceImpl implements EmailService {
             Template template = handlebars.compileInline(loadTemplate(request.getTemplateName()));
 
             // Aplicar los datos a la plantilla
-
             String html = template.apply(request.getVariables());
 
             // Crear el mensaje MIME
@@ -78,7 +77,6 @@ public class EmailServiceImpl implements EmailService {
 
             if (request.getImagenes() != null && !request.getImagenes().isEmpty()) {
                 request.getImagenes().forEach((key, value) -> {
-                    log.info("key value: {}", key);
                     try {
                         helper.addInline(value.getUniqueCID(), loadResourse(value.getNameResource()));
                     } catch (MessagingException e) {
@@ -88,9 +86,7 @@ public class EmailServiceImpl implements EmailService {
             }
 
             if (request.getAttachments() != null && !request.getAttachments().isEmpty()) {
-                log.debug("Adjuntos");
                 for (AttachmentsDto item : request.getAttachments()) {
-                    log.debug("Adjuntos name: ", item.getName());
                     helper.addAttachment(item.getName() + item.getMediaType(), getAttachment(item.getBase64()));
                 }
             }
@@ -99,36 +95,45 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(message);
 
             return new ResponseDto("Correo enviado.", HttpStatus.ACCEPTED, true);
+        } catch (RestExceptionHandler e) {
+            // Manejar excepciones personalizadas y lanzar el error tal cual
+            log.error("Error específico al enviar el correo: {}", e.getMessage());
+            throw e;
         } catch (Exception e) {
-            log.error("error al enviar el correo ", e);
-            e.printStackTrace();
-            throw new RestExceptionHandler("P-409", HttpStatus.CONFLICT,
-                    String.format("Error al enviar el correo: [%s]", e.getMessage()));
+            // Manejar cualquier otra excepción desconocida
+            log.error("Error al enviar el correo", e);
+            throw new RestExceptionHandler(CodeUtils.API_CODE_500, HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al enviar el correo revise los registros del sistema.");
         }
 
     }
 
     private String loadTemplate(String templateName) {
-        log.info("template name:  {}", templateName);
-        try {
-            // validar que tenga extencion
-            if (templateName.contains(".")) {
-                log.info("tiene extension: {}", templateName);
-                throw new RestExceptionHandler(codeApi, HttpStatus.BAD_REQUEST,
-                        "El nombre no debe contener extencion.");
+        // validar que tenga extencion
+        if (templateName.contains(".")) {
+            throw new RestExceptionHandler(CodeUtils.API_CODE_400, HttpStatus.BAD_REQUEST,
+                    "El nombre no debe contener extencion.");
+        }
 
-            }
+        try {
             // Cargar la plantilla desde la nueva ruta
             File templateFile = new File(templatePath + templateName + ".hbs");
             if (!templateFile.exists()) {
-                throw new RestExceptionHandler("P-404", HttpStatus.NOT_FOUND,
-                        "Plantilla archivo no encontrado: " + templateFile.getAbsolutePath());
+                throw new RestExceptionHandler(CodeUtils.API_CODE_404, HttpStatus.NOT_FOUND,
+                        "Archivo plantilla no encontrado.");
             }
             return new String(Files.readAllBytes(templateFile.toPath()));
+        } catch (RestExceptionHandler e) {
+            // Rethrow RestExceptionHandler tal cual sin modificar
+            throw e;
+        } catch (IOException e) {
+            // Si ocurre un problema relacionado con I/O, lanzar error 500 específico
+            throw new RestExceptionHandler(CodeUtils.API_CODE_500, HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al leer el archivo plantilla.");
         } catch (Exception e) {
-            throw new RestExceptionHandler("P-500", HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al cargar el archivo plantilla: " + e.getMessage());
-
+            // Capturar cualquier otro tipo de excepción no específica
+            throw new RestExceptionHandler(CodeUtils.API_CODE_500, HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error desconocido al cargar el archivo plantilla.");
         }
 
     }
@@ -137,18 +142,24 @@ public class EmailServiceImpl implements EmailService {
         try {
             // validar que tenga extencion
             if (imageName.contains(".")) {
-                log.info("tiene extension: {}", imageName);
-                throw new RestExceptionHandler(codeApi, HttpStatus.BAD_REQUEST,
+                throw new RestExceptionHandler(CodeUtils.API_CODE_400, HttpStatus.BAD_REQUEST,
                         "El nombre no debe contener extencion.");
             }
             // Cargar la plantilla desde la nueva ruta
             File imageFile = new File(imgPath + imageName + ".png");
+            if (!imageFile.exists()) {
+                throw new RestExceptionHandler(CodeUtils.API_CODE_404, HttpStatus.NOT_FOUND,
+                        "Archivo de imagen no encontrado.");
+            }
 
             // Adjuntar imagen y configurar el cid
             return new FileSystemResource(imageFile);
+        } catch (RestExceptionHandler e) {
+            // Rethrow RestExceptionHandler tal cual sin modificar
+            throw e;
         } catch (Exception e) {
-            throw new RestExceptionHandler("P-500", HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al cargar el archivo imagen: " + e.getMessage());
+            throw new RestExceptionHandler(CodeUtils.API_CODE_500, HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al cargar el archivo imagen.");
         }
 
     }

@@ -11,6 +11,10 @@ spring:
     application:
         name: Quick Mail
 
+    web:
+        resources:
+            add-mappings: false
+
     mail:
         host: ${EMAIL_HOST}
         port: ${EMAIL_PORT}
