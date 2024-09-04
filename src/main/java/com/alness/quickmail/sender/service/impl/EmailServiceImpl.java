@@ -40,7 +40,7 @@ public class EmailServiceImpl implements EmailService {
 
     private String codeApi = "P-400";
 
-    private final String baseDir = System.getProperty("user.dir") + File.separator + "quickmail" + File.separator;
+    private final String baseDir = System.getProperty("user.dir") + File.separator + "assets" + File.separator;
     private final String templatePath = baseDir + "templates" + File.separator;
     private final String imgPath = baseDir + "img" + File.separator;
 
