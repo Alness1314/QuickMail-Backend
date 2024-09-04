@@ -32,7 +32,7 @@ public class EmailRequest {
     private String templateName;
 
     @NotNull(message = "El mapa de variables no debe ser nulo, debe estar inicializado.")
-    private Map<String, String> variables;
+    private Map<String, Object> variables;
 
     private Map<String, ImageDto> imagenes;    
 }
