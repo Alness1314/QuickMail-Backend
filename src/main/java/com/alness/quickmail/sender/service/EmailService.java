@@ -5,4 +5,5 @@ import com.alness.quickmail.sender.dto.ResponseDto;
 
 public interface EmailService {
     public ResponseDto sendEmail(EmailRequest request);
+    public ResponseDto sendInternal();
 }
