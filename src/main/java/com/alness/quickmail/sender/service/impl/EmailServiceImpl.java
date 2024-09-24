@@ -171,16 +171,16 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public ResponseDto sendInternal() {
-        //debemos buscar los articulos desde la db
-        //debemos recorrer el campo json buscando los certificados
-        //debemos revisar la fecha si esta vencido o no
-        //si esta vencido enviaremos un correo
-        //buscaremos la direccion de correo a donde enviaremos dicho correo
-        //añadiremos la plantilla
-        //añadiremos las variables
-        //añadiremos las imagenes
-        //enviaremos el correo
-       return null;
+        // debemos buscar los articulos desde la db
+        // debemos recorrer el campo json buscando los certificados
+        // debemos revisar la fecha si esta vencido o no
+        // si esta vencido enviaremos un correo
+        // buscaremos la direccion de correo a donde enviaremos dicho correo
+        // añadiremos la plantilla
+        // añadiremos las variables
+        // añadiremos las imagenes
+        // enviaremos el correo
+        return null;
     }
 
 }
