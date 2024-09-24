@@ -2,7 +2,6 @@ package com.alness.quickmail.users.entity;
 
 import java.util.UUID;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,24 +29,7 @@ public class UserEntity implements Serializable {
     @Column(name = "email", nullable = false, columnDefinition = "character varying")
     private String email;
 
-    @Column(name = "password", nullable = false, columnDefinition = "character varying")
-    private String password;
-
-    @Column(name = "rol", nullable = false, columnDefinition = "character varying")
-    private String rol;
-
-    @Column(name = "\"codeRecover\"", nullable = true, columnDefinition = "character varying")
-    private String codeRecover;
-
-    @Column(name = "\"dateCreatedCodeRecover\"", nullable = false, columnDefinition = "timestamp with time zone")
-    private OffsetDateTime dateCreatedCodeRecover;
-
     @Column(name = "\"sendExpirationAlert\"", nullable = true, columnDefinition = "boolean")
     private Boolean sendExpirationAlert;
 
-    @Column(name = "\"createdAt\"", nullable = false, columnDefinition = "timestamp with time zone")
-    private OffsetDateTime createdAt;
-
-    @Column(name = "\"updatedAt\"", nullable = false, columnDefinition = "timestamp with time zone")
-    private OffsetDateTime updatedAt;
 }

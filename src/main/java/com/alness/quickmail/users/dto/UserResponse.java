@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.OffsetDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,11 +17,5 @@ public class UserResponse {
     private UUID id;
     private String fullName;
     private String email;
-    private String password;
-    private String rol;
-    private String codeRecover;
-    private OffsetDateTime dateCreatedCodeRecover;
     private Boolean sendExpirationAlert;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
 }
