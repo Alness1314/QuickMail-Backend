@@ -112,12 +112,7 @@ public class AlertSendServiceImpl implements AlertSendService {
 
     private Boolean recordExists(CertificadeDto cert) {
         List<HistoryResponse> response = historyService.find(Map.of("file", cert.getFileId()));
-        if (!response.isEmpty() && response.size() == 1) {
-            response.get(0);
-            return true;
-        } else {
-            return false;
-        }
+        return response.size() == 1 && Boolean.TRUE.equals(response.get(0).getSendAlert());
     }
 
 }

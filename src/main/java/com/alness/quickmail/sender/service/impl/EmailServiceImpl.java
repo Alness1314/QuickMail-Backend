@@ -2,6 +2,7 @@ package com.alness.quickmail.sender.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -122,7 +123,7 @@ public class EmailServiceImpl implements EmailService {
                 throw new RestExceptionHandler(CodeUtils.API_CODE_404, HttpStatus.NOT_FOUND,
                         "Archivo plantilla no encontrado.");
             }
-            return new String(Files.readAllBytes(templateFile.toPath()));
+            return Files.readString(templateFile.toPath(), StandardCharsets.UTF_8);
         } catch (RestExceptionHandler e) {
             // Rethrow RestExceptionHandler tal cual sin modificar
             throw e;
@@ -167,20 +168,6 @@ public class EmailServiceImpl implements EmailService {
     private InputStreamSource getAttachment(String base64String) {
         byte[] resource = Base64.getDecoder().decode(base64String);
         return new ByteArrayResource(resource);
-    }
-
-    @Override
-    public ResponseDto sendInternal() {
-        // debemos buscar los articulos desde la db
-        // debemos recorrer el campo json buscando los certificados
-        // debemos revisar la fecha si esta vencido o no
-        // si esta vencido enviaremos un correo
-        // buscaremos la direccion de correo a donde enviaremos dicho correo
-        // añadiremos la plantilla
-        // añadiremos las variables
-        // añadiremos las imagenes
-        // enviaremos el correo
-        return null;
     }
 
 }
