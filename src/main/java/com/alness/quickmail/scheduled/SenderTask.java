@@ -16,7 +16,7 @@ public class SenderTask {
     @Autowired
     private AlertSendService alertSendService;
 
-    @Scheduled(cron = "${CRON_EXPRESION}")
+    @Scheduled(cron = "${cron.expresion}")
     private void sendMail() {
         Long inicio = System.currentTimeMillis();
         try {

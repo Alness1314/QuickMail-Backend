@@ -1,14 +1,17 @@
-{
-  "properties": [
-    {
-      "name": "email.from",
-      "type": "java.lang.String",
-      "description": "A description for 'email.from'"
-    },
-    {
-      "name": "api.prefix",
-      "type": "java.lang.String",
-      "description": "A description for 'api.prefix'"
-    }
-  ]
-}
+{"properties": [
+  {
+    "name": "email.from",
+    "type": "java.lang.String",
+    "description": "A description for 'email.from'"
+  },
+  {
+    "name": "api.prefix",
+    "type": "java.lang.String",
+    "description": "A description for 'api.prefix'"
+  },
+  {
+    "name": "cron.expresion",
+    "type": "java.lang.String",
+    "description": "A description for 'cron.expresion'"
+  }
+]}

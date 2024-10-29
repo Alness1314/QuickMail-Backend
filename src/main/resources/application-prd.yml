@@ -54,3 +54,7 @@ logging:
     #   max-size: 50G
     name: logs/quickmail_app.log
     path: logs
+
+
+cron:
+    expresion: ${CRON_EXPRESION}
